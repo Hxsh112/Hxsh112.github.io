@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Just a techie crafting futuristic, neon‑aesthetic interfaces with clean logic." />
+  <meta name="keywords" content="Harsh Kumar, developer, frontend, UI, techie, portfolio, neon, glassmorphism" />
+  <meta property="og:title" content="Harsh Kumar — Portfolio" />
+  <meta property="og:description" content="Just a techie crafting futuristic, neon‑aesthetic interfaces with clean logic." />
+  <meta property="og:image" content="assets/portfolio-preview.png" />
+  <meta name="theme-color" content="#0a0a0c" />
+
+  <title>Harsh Kumar — Portfolio</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* GLOBAL THEME */
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #0a0a0c;
+      color: #e6eef8;
+      font-family: Inter, system-ui, sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    /* Neon gradient */
+    .neon-text {
+      background: linear-gradient(90deg, #00eaff, #9966ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: gradientMove 6s ease infinite;
+      background-size: 200% 200%;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Glass Effect Base */
+    .glass {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* Scroll Progress Bar */
+    #progressBar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00eaff, #9966ff);
+      width: 0%;
+      z-index: 50;
+    }
+
+    /* Cursor Neon Glow (Hero Only) */
+    #cursor-glow {
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(0,234,255,0.20), rgba(0,0,0,0));
+      pointer-events: none;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.2s linear;
+      z-index: 2;
+    }
+
+    /* Code Compile Text */
+    .compile-line {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+    }
+
+    @keyframes blinkCursor {
+      50% { opacity: 0; }
+    }
+
+    .cursor {
+      animation: blinkCursor 0.9s infinite;
+    }
+
+    /* PROJECTS: Masonry cards, crack overlay, squircle */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+    @media (min-width: 640px) { .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (min-width: 1024px) { .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+    .proj-card {
+      position: relative;
+      border-radius: 18px; /* soft squircle */
+      overflow: hidden;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 220ms ease, box-shadow 220ms ease;
+    }
+    .proj-card:hover { transform: translateY(-8px); }
+    .proj-media {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+    .proj-body { padding: 1rem; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+    .proj-title { font-weight: 700; color: #e6eef8; }
+    .proj-sub { font-size: 13px; color: #bfcbdc; margin-top: 6px; }
+
+    /* Ripple effect */
+    .ripple-overlay {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 30;
+    }
+    .ripple {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: radial-gradient(circle, rgba(255,255,255,0.55), rgba(0,234,255,0.45), rgba(153,102,255,0.35), rgba(0,0,0,0));
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0.85;
+      animation: rippleAnim 0.9s ease-out forwards;
+      mix-blend-mode: screen;
+      filter: blur(1px);
+    }
+    @keyframes rippleAnim {
+      0%   { opacity: 0.9; transform: translate(-50%, -50%) scale(0); }
+      60%  { opacity: 0.45; transform: translate(-50%, -50%) scale(var(--scaleFactor)); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(calc(var(--scaleFactor) * 1.15)); }
+    }
+    /* Humor overlay (kept) */
+    .humor {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: rgba(230,238,248,0.95);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 300ms ease, transform 300ms ease;
+      z-index: 40;
+    }
+    .humor-show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Minimal footer link */
+    /* Section Divider: thin neon line + soft glow */
+    .section-divider {
+      width: 100%;
+      height: 2px;
+      margin: 60px 0;
+      background: linear-gradient(90deg, rgba(0,234,255,0), rgba(0,234,255,0.45), rgba(153,102,255,0.45), rgba(153,102,255,0));
+      position: relative;
+      overflow: visible;
+    }
+    .section-divider::after {
+      content: "";
+      position: absolute;
+      top: -6px;
+      left: 0;
+      right: 0;
+      height: 12px;
+      background: radial-gradient(circle, rgba(0,234,255,0.12), rgba(153,102,255,0.12), transparent 70%);
+      filter: blur(8px);
+      pointer-events: none;
+    }
+    /* Contact buttons hover */
+.contact-btn {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  color: rgba(230,238,248,0.95) !important;
+  box-shadow: 0 6px 24px rgba(3,8,15,0.6) inset, 0 6px 20px rgba(0,0,0,0.45);
+  transition: transform 180ms ease, box-shadow 200ms ease, background 180ms ease;
+  backdrop-contrast: 1.05;
+}
+.contact-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04)) !important;
+  color: #00eaff !important;
+  box-shadow: 0 12px 40px rgba(0,234,255,0.06), 0 8px 30px rgba(0,0,0,0.55) inset;
+}
+    .proj-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 1rem 1rem 1rem;
+      position: relative;
+      z-index: 50;
+    }
+    .proj-link-box {
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #e6eef8;
+      text-decoration: none;
+      transition: 200ms ease;
+      position: relative;
+      z-index: 60;
+    }
+    .proj-link-box:hover {
+      background: rgba(255,255,255,0.14);
+      color: #00eaff;
+      transform: scale(1.05);
+    }
+
+    /* Staggered heights (noticeable) */
+    .h-variant-1 { min-height: 220px; }
+    .h-variant-2 { min-height: 280px; }
+    .h-variant-3 { min-height: 240px; }
+    .h-variant-4 { min-height: 300px; }
+    /* Hero content animation */
+#heroContent { opacity: 0; transition: opacity 1s ease, transform 1s ease; transform: translateY(12px); }
+  </style>
+</style>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTQwIDYwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPg0KPGxpbmVhckdyYWRpZW50IGlkPSJnciIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjAiPg0KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwZWFmZiIvPg0KPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjOTk2NmZmIi8+DQo8L2xpbmVhckdyYWRpZW50Pg0KPHBhdGggZD0iTTIwIDI1IEw0MCAyNSBNNjAgMTUgTDgwIDE1IE04MCAxNSBMODAgNDUgTDYwIDQ1IE02MCA0NSBMNjAgMTUgTTk1IDI1IEwxMTUgMjUgTDExNSAyNSBMMTE1IDQ1IEwxMzUgNDUgTDEzNSA0NSBMMTM1IDE1IiBzdHJva2U9InVybCgjZ3IpIiBzdHJva2Utd2lkdGg9IjgiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPg0KPC9zdmc+" />
+</head>
+
+<body>
+
+<audio id="ui-sound" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQwAAAAA/////wD///8AAP//AAD//wAA//8AAP//AAD///8A"></audio>
+
+  <!-- SCROLL PROGRESS BAR -->
+  <div id="progressBar"></div>
+
+  <!-- Compile Box ABOVE all content -->
+  <div id="compileBox" class="compile-line text-[#00eaff] opacity-100 fixed top-28 left-6 z-50">
+    <p>
+      &gt; compiling portfolio
+      <span id="dots">.</span>
+    </p>
+  </div>
+
+  <div id="pageContent" class="opacity-0 transition-opacity duration-700">
+  <!-- NAVBAR -->
+  <nav class="w-full py-5 px-6 flex justify-between items-center glass fixed top-0 left-0 z-40">
+    <h1 class="text-xl font-extrabold neon-text">&lt;/Harsh Kumar/&gt;</h1>
+    <div class="flex gap-6 text-sm">
+      <a href="#projects" class="hover:text-[#00eaff]">Projects</a>
+      <a href="#about" class="hover:text-[#00eaff]">About</a>
+      <a href="#skills" class="hover:text-[#00eaff]">Skills</a>
+      <a href="#contact" class="hover:text-[#00eaff]">Contact</a>
+      <a href="assets/resume.pdf" target="_blank" class="hover:text-[#00eaff]">Resume</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section id="hero" class="relative pt-36 pb-32 px-6 overflow-hidden">
+
+    <!-- Cursor Glow -->
+    <div id="cursor-glow"></div>
+
+    <!-- Hero Content -->
+    <div id="heroContent" class="opacity-0 transition-opacity duration-700">
+      <h1 class="text-4xl font-extrabold mb-4 neon-text">
+        Just a techie.  
+      </h1>
+      <p class="text-gray-300 max-w-xl text-sm leading-relaxed">
+        Building aesthetic interfaces with logic. A tech-artsy dev with clean UI taste and dark humor powered by caffeine.
+      </p>
+
+      <div class="mt-6 flex gap-4">
+        <a href="#projects" class="glass px-4 py-2 rounded-lg font-semibold text-sm hover:scale-105 transition">View Projects</a>
+        <a href="assets/resume.pdf" class="px-4 py-2 rounded-lg font-semibold text-sm border border-[#00eaff] hover:scale-105 transition">Download CV</a>
+      </div>
+    </div>
+
+  </section>
+  <div class="section-divider"></div>
+
+  <!-- About Section -->
+  <section id="about" class="py-32 px-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl font-bold neon-text mb-6">&lt;About /&gt;</h2>
+      <p class="text-gray-300 leading-relaxed text-sm mb-8">
+        I'm Harsh Kumar, a tech–artsy developer who builds interfaces where aesthetics and logic work together. I focus on clarity, minimalism, and design-led engineering. Every project I touch aims to be clean, usable, and visually sharp.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass p-5 rounded-xl hover:scale-105 transition">
+          <h3 class="font-semibold text-[#00eaff] mb-2">Design Driven</h3>
+          <p class="text-gray-400 text-xs">UI/UX principles, consistency, and crisp visual decisions.</p>
+        </div>
+        <div class="glass p-5 rounded-xl hover:scale-105 transition">
+          <h3 class="font-semibold text-[#00eaff] mb-2">Frontend Focused</h3>
+          <p class="text-gray-400 text-xs">React, TailwindCSS, clean components, responsive logic.</p>
+        </div>
+        <div class="glass p-5 rounded-xl hover:scale-105 transition">
+          <h3 class="font-semibold text-[#00eaff] mb-2">Problem Solver</h3>
+          <p class="text-gray-400 text-xs">Debugging instincts stronger than my morning coffee.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+  <!-- Skills Section -->
+  <section id="skills" class="py-32 px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold neon-text mb-10">&lt;Tech Stack /&gt;</h2>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">HTML</div>
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">CSS</div>
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">JavaScript</div>
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">React</div>
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">TailwindCSS</div>
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">Git</div>
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">Python</div>
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">Firebase</div>
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">API Integration</div>
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">Responsive Design</div>
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">SEO Basics</div>
+        <div class="glass p-4 rounded-lg text-center hover:scale-105 transition text-sm">Debugging</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+  <section id="projects" class="py-32 px-6">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold neon-text mb-10">&lt;Projects /&gt;</h2>
+      <div class="projects-grid">
+
+        <!-- Project 1: Classhunt -->
+        <article class="proj-card glass h-variant-1">
+          <img src="assets/project-classhunt1.png" alt="Classhunt screenshot" class="proj-media" onerror="this.style.filter='grayscale(60%)';this.src='';" />
+          <div class="proj-body">
+            <div>
+              <div class="proj-title">Classhunt</div>
+              <div class="proj-sub">Find and book niche learning sessions — Flutter, Dart, Firebase.</div>
+            </div>
+          </div>
+          <div class="ripple-overlay"></div>
+          <div class="humor">&gt; initializing classhunt_process() // compiled with too much coffee</div>
+          <div class="proj-footer"><a class="proj-link-box" href="#" target="_blank">View on GitHub</a></div>
+        </article>
+
+        <!-- Project 2: AI Firewall -->
+        <article class="proj-card glass h-variant-2">
+          <img src="assets/ai-firewall1.png" class="proj-media" onerror="this.style.filter='grayscale(60%)';this.src='';" />
+          <div class="proj-body">
+            <div>
+              <div class="proj-title">AI Firewall</div>
+              <div class="proj-sub">Threat detection dashboard for model outputs. Backend + React dashboard.</div>
+            </div>
+          </div>
+          <div class="ripple-overlay"></div>
+          <div class="humor">// initializing chaos_protocol() — worked once, statistically unlikely to work again.</div>
+          <div class="proj-footer"><a class="proj-link-box" href="#" target="_blank">View on GitHub</a></div>
+        </article>
+
+        <!-- Placeholder 1 -->
+        <article class="proj-card glass h-variant-3">
+          <div class="proj-body" style="min-height:160px; display:flex; align-items:center; justify-content:center;">
+            <div class="text-center">
+              <div class="proj-title">Coming Soon</div>
+              <div class="proj-sub">&gt; incoming project... // compiling soon</div>
+            </div>
+          </div>
+          <div class="ripple-overlay"></div>
+          <div class="humor">&gt; project_queue.push('future_masterpiece')</div>
+          <div class="proj-footer"><a class="proj-link-box" href="#">—</a></div>
+        </article>
+
+        <!-- Placeholder 2 -->
+        <article class="proj-card glass h-variant-4">
+          <div class="proj-body" style="min-height:160px; display:flex; align-items:center; justify-content:center;">
+            <div class="text-center">
+              <div class="proj-title">Reserved</div>
+              <div class="proj-sub">&gt; incoming project... // compiling soon</div>
+            </div>
+          </div>
+          <div class="ripple-overlay"></div>
+          <div class="humor">// redacted by future version of me</div>
+          <div class="proj-footer"><a class="proj-link-box" href="#">—</a></div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+   <div class="section-divider"></div>
+  <section id="contact" class="py-32 px-6">
+    <div class="max-w-xl mx-auto glass p-8 rounded-2xl backdrop-blur-2xl"
+         style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);">
+      <h2 class="text-3xl font-bold neon-text mb-6">&lt;Contact /&gt;</h2>
+
+      <p class="text-gray-300 text-sm mb-6">
+        Let's connect. I usually respond faster than servers returning 200 OK.
+      </p>
+
+      <div class="flex flex-col gap-4">
+
+        <a href="mailto:hxsh112@proton.me"
+           class="contact-btn text-center block px-4 py-3 rounded-xl font-semibold text-sm"
+           style="background: rgba(255,255,255,0.10); backdrop-filter: blur(14px);
+                  border: 1px solid rgba(255,255,255,0.16); color: #e6eef8;">
+          Email Me
+        </a>
+
+        <a href="https://github.com/Hxsh112" target="_blank"
+           class="contact-btn text-center block px-4 py-3 rounded-xl font-semibold text-sm"
+           style="background: rgba(255,255,255,0.10); backdrop-filter: blur(14px);
+                  border: 1px solid rgba(255,255,255,0.16); color: #e6eef8;">
+          GitHub
+        </a>
+
+        <a href="https://www.linkedin.com/in/harsh-jain-tech112" target="_blank"
+           class="contact-btn text-center block px-4 py-3 rounded-xl font-semibold text-sm"
+           style="background: rgba(255,255,255,0.10); backdrop-filter: blur(14px);
+                  border: 1px solid rgba(255,255,255,0.16); color: #e6eef8;">
+          LinkedIn
+        </a>
+
+        <a href="assets/resume.pdf" target="_blank"
+           class="contact-btn text-center block px-4 py-3 rounded-xl font-semibold text-sm"
+           style="background: rgba(255,255,255,0.10); backdrop-filter: blur(14px);
+                  border: 1px solid rgba(255,255,255,0.16); color: #e6eef8;">
+          Download CV
+        </a>
+
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <!-- JS: Scroll Bar + Compile Intro + Cursor Glow -->
+  <script>
+    // Scroll Progress Bar
+    window.addEventListener("scroll", () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = (scrollTop / height) * 100;
+      document.getElementById("progressBar").style.width = progress + "%";
+    });
+
+    // Animated dots for compile text
+    let dotCount = 1;
+    const dotsEl = document.getElementById("dots");
+    setInterval(() => {
+      dotCount = (dotCount % 3) + 1;
+      dotsEl.textContent = ".".repeat(dotCount);
+    }, 400);
+    // Code Compile Intro Animation
+    setTimeout(() => {
+      const heroC = document.getElementById("heroContent");
+      document.getElementById("compileBox").style.opacity = "0";
+      document.getElementById("pageContent").style.opacity = "1";
+      heroC.style.opacity = "1";
+      heroC.style.transform = "translateY(0)";
+      document.getElementById("compileBox").style.display = "none";
+    }, 2000);
+
+    // Projects: cursor-origin ripple + humor reveal
+    document.querySelectorAll('.proj-card').forEach(card => {
+      const overlay = card.querySelector('.ripple-overlay');
+      const humor = card.querySelector('.humor');
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+
+        ripple.style.left = (e.clientX - rect.left) + 'px';
+        ripple.style.top = (e.clientY - rect.top) + 'px';
+
+        const speed = Math.abs(e.movementX) + Math.abs(e.movementY);
+        const scaleFactor = Math.min(12, Math.max(5, speed / 4));
+        ripple.style.setProperty('--scaleFactor', scaleFactor);
+
+        overlay.appendChild(ripple);
+
+        setTimeout(() => ripple.remove(), 900);
+      });
+
+      card.addEventListener('mouseenter', () => {
+        humor.classList.add('humor-show');
+      });
+
+      card.addEventListener('mouseleave', () => {
+        humor.classList.remove('humor-show');
+      });
+    });
+
+    // Cursor Glow (Hero Only)
+    const glow = document.getElementById("cursor-glow");
+    const hero = document.getElementById("hero");
+
+    hero.addEventListener("mousemove", (e) => {
+      const rect = hero.getBoundingClientRect();
+      glow.style.left = e.clientX + "px";
+      glow.style.top = e.clientY + "px";
+      glow.style.opacity = 1;
+    });
+
+    hero.addEventListener("mouseleave", () => {
+      glow.style.opacity = 0;
+    });
+    // Micro UI sound for interactions
+    const uiSound = document.getElementById("ui-sound");
+
+    // allow first user interaction to unlock audio
+    document.body.addEventListener("click", () => {
+      try { uiSound.play().catch(()=>{}); } catch(e){}
+    }, { once: true });
+
+    // Play sound on UI actions
+    document.querySelectorAll(".proj-link-box, .contact-btn, nav a").forEach(el => {
+      el.addEventListener("click", () => {
+        try {
+          uiSound.currentTime = 0;
+          uiSound.play();
+        } catch(e) {}
+      });
+    });
+  </script>
+
+</body>
+<footer class="py-10 px-6 text-center"
+        style="font-family: 'JetBrains Mono', monospace; color: #8b9bb8;">
+  &gt; portfolio served from /dev/harsh — © 2025
+</footer>
+</html>
