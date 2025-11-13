@@ -258,16 +258,29 @@
 
   <div id="pageContent" class="opacity-0 transition-opacity duration-700">
   <!-- NAVBAR -->
-  <nav class="w-full py-5 px-6 flex justify-between items-center glass fixed top-0 left-0 z-40">
+  <nav class="w-full py-5 px-6 pr-3 flex justify-between items-center glass fixed top-0 left-0 z-40" style="padding-right:10px;">
+    <button id="menuBtn" class="sm:hidden text-[#00eaff] text-2xl mr-3">
+      ☰
+    </button>
     <h1 class="text-xl font-extrabold neon-text">&lt;/Harsh Kumar/&gt;</h1>
-    <div class="flex gap-6 text-sm">
-      <a href="#projects" class="hover:text-[#00eaff]">Projects</a>
-      <a href="#about" class="hover:text-[#00eaff]">About</a>
-      <a href="#skills" class="hover:text-[#00eaff]">Skills</a>
-      <a href="#contact" class="hover:text-[#00eaff]">Contact</a>
-      <a href="assets/resume.pdf" target="_blank" class="hover:text-[#00eaff]">Resume</a>
+    <div id="navLinks" class="hidden sm:flex flex-col sm:flex-row gap-3 text-xs sm:text-sm bg-[rgba(20,20,25,0.9)] sm:bg-transparent absolute sm:static top-16 right-4 p-4 sm:p-0 rounded-xl sm:rounded-none backdrop-blur-xl border border-[rgba(255,255,255,0.08)] sm:border-none shadow-xl sm:shadow-none">
+      <a href="#projects" class="hover:text-[#00eaff] whitespace-nowrap text-[12px] sm:text-sm">Projects</a>
+      <a href="#about" class="hover:text-[#00eaff] whitespace-nowrap text-[12px] sm:text-sm">About</a>
+      <a href="#skills" class="hover:text-[#00eaff] whitespace-nowrap text-[12px] sm:text-sm">Skills</a>
+      <a href="#contact" class="hover:text-[#00eaff] whitespace-nowrap text-[12px] sm:text-sm">Contact</a>
+      <a href="assets/resume.pdf" target="_blank" class="hover:text-[#00eaff] whitespace-nowrap text-[12px] sm:text-sm">Resume</a>
     </div>
   </nav>
+
+  <script>
+    const menuBtn = document.getElementById("menuBtn");
+    const navLinks = document.getElementById("navLinks");
+
+    menuBtn.addEventListener("click", () => {
+      navLinks.classList.toggle("hidden");
+      navLinks.classList.toggle("flex");
+    });
+  </script>
 
   <!-- HERO SECTION -->
   <section id="hero" class="relative pt-36 pb-32 px-6 overflow-hidden">
